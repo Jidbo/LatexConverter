@@ -8,14 +8,26 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" >
 </head>
 <body>
-   <header>
-      <h1>Latex-Converter</h1>
-   </header>
-   <article>
-       <p>
-           Buffering...
-       </p>
-   </article>
+    <div class="container">
+        <div class="row">
+            <div class="col-10">
+                <h1>Latex-Converter</h1>
+                <div class="col-5">
+                    <form action="" method="post">
+                        <div class="form-group">
+                            <input type="text" name="url" class="form-control" placeholder="CodiMD URL" />
+                            <input type="submit" class="form-control btn" value="Submit" />
+                        </div>
+                    </form>
+                </div>
+                <div class="col-5">
+                    <p>
+                        {{ data }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
    <script src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}" ></script>
    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}" ></script>
 </body>

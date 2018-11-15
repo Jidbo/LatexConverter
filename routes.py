@@ -1,12 +1,20 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 import argparse
+from codimd import Codimd
 
 app = Flask(__name__)
 
 
-@app.route("/")
+@app.route("/",  methods=["GET", "POST"])
 def home():
-    return render_template("index.html")
+    if request.method == "POST":
+        url = request.form["url"]
+        codi = Codimd(url)
+        codi.parse_url()
+        data = codi.get_md()
+        return render_template("index.html", data=data)
+    else:
+        return render_template("index.html")
 
 
 if __name__ == "__main__":
