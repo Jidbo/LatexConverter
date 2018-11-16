@@ -38,7 +38,11 @@ class Codimd:
     def get_md(self):
         if self.protocol is not None and self.domain is not None and self.note_id is not None:
             url = f"{self.protocol}://{self.domain}/{self.note_id}/download"
-            data = requests.get(url)
+            try:
+                data = requests.get(url)
+            except ConnectionError:
+                return "Connection to server failed!"
+
             if data.status_code is 200:
                 return data.text
             else:

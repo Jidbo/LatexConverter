@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 import argparse
 from codimd import Codimd
+from converter import Converter
 
 app = Flask(__name__)
 
@@ -12,9 +13,11 @@ def home():
         codi = Codimd(url)
         codi.parse_url()
         data = codi.get_md()
-        return render_template("index.html", data=data)
+        conv = Converter(data)
+        latex = conv.convert_to_latex()
+        return render_template("index.html", data=latex, url=url)
     else:
-        return render_template("index.html")
+        return render_template("index.html", url="")
 
 
 if __name__ == "__main__":
