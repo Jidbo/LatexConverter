@@ -24,7 +24,7 @@ class Codimd:
 
     def parse_url(self):
         # "https?://(?P<domain>\S+)/(?P<id>[a-zA-Z0-9_]*)(\?(both|view|edit))?"
-        reg = re.compile(r'(?P<protocol>https?)://(?P<domain>\S+)/(?P<noteid>[a-zA-Z0-9_]*)(\?(both|view|edit))?')
+        reg = re.compile(r'(?P<protocol>https?)://(?P<domain>\S+)/(?P<noteid>[a-zA-Z0-9_-]*)(\?(both|view|edit))?(#.*)?')
         match = reg.fullmatch(self.url)
 
         if match is not None:
