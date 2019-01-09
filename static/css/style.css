@@ -1,7 +1,3 @@
-header {
-    color: red;
-}
-
 .material-switch > input[type="checkbox"] {
    display: none;   
 }

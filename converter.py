@@ -39,7 +39,7 @@ class Converter:
 
         return self.converted
 
-    def addTemplate(self, template):
+    def add_template(self, template):
         self.arguments.append("--template")
         templatedir = f"pandoc-templates/{template}.tex"
         self.arguments.append(templatedir)
