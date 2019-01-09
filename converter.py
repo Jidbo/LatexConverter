@@ -12,6 +12,7 @@ class Converter:
         self.filename = None
         self.converted = None
         self.to_convert = True
+        self.arguments = ["-s"]
 
     def convert_to_text(self):
         return self._convert()
@@ -32,7 +33,14 @@ class Converter:
     def _convert(self):
         if self.to_convert:
             self.to_convert = False
-            self.converted = pypandoc.convert_text(self.md, self.to, format=self.in_format, extra_args=["-s"])
+            self.converted = pypandoc.convert_text(self.md, self.to,
+                                                   format=self.in_format,
+                                                   extra_args=self.arguments)
 
         return self.converted
+
+    def addTemplate(self, template):
+        self.arguments.append("--template")
+        templatedir = f"pandoc-templates/{template}.tex"
+        self.arguments.append(templatedir)
 
