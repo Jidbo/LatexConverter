@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, send_file, redirect
 import argparse
-from codimd import Codimd
+from codimd import Codimd, StatusCodeError
 from converter import Converter
 
 app = Flask(__name__)
@@ -15,7 +15,21 @@ def home():
         # get content from codi md
         codi = Codimd(url)
         codi.parse_url()
-        data = codi.get_md()
+        try:
+            data = codi.get_md()
+        except (AttributeError, StatusCodeError) as e:
+            if isinstance(e, AttributeError):
+                values["error_display"] = "Not a valid CodiMD URL!"
+            elif isinstance(e, StatusCodeError):
+                values["error_display"] = "Could not reach given CodiMD URL!"
+
+            if "eisvogelTemplate" in request.form:
+                values["eisvogel"] = True
+            if "convertToFile" in request.form:
+                values["convert_to_file"] = True
+            return render_template("index.html", **values)
+
+
         conv = Converter(data, codi.note_id)
 
         # check if template is enabled
@@ -25,7 +39,7 @@ def home():
 
         # check if convert to file is enabled
         if "convertToFile" in request.form:
-            print("SAVE FILE")
+            values["convert_to_file"] = True
             conv.convert_to_file("tex")
             values["file_path"] = conv.name
             return render_template("index.html", **values)

@@ -14,12 +14,21 @@
             <div class="page-header">
                 <h1>Latex-Converter</h1>
             </div>
-            <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <div class="alert alert-info alert-dismissible fade show"
+            id="copytoclip" role="alert">
                 <strong>Copied text to clipboard!</strong>
                 <button type="button" class="close" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+            {% if error_display %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>{{ error_display }}</strong>
+                <button type="button" class="close" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endif %}
             <div class="row">
 
                 <div class="col-md-6">
@@ -43,7 +52,7 @@
                             <li class="list-group-item">
                                 Convert to file
                                 <div class="material-switch float-right">
-                                    {% if file_path %}
+                                    {% if convert_to_file %}
                                         <input id="saveToFile" name="convertToFile" type="checkbox" checked/>
                                     {% else %}
                                         <input id="saveToFile" name="convertToFile" type="checkbox"/>
@@ -71,7 +80,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <textarea rows="5" type="text" class="form-control" id="result">{{ data }}</textarea>
-                                <button id="copytoclip" class="form-control btn btn-info">Copy Me</button>
+                                <button id="copytoclipbtn" class="form-control btn btn-info">Copy Me</button>
                             </div>
                         </div>
                     {% endif %}
@@ -84,16 +93,16 @@
 <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
 <script>
     $(document).ready(function () {
-        $('.alert').hide();
+        $('#copytoclip').hide();
 
         $('.close').click(function() {
             $('.alert').hide();
         });
 
-        $('#copytoclip').click(function() {
+        $('#copytoclipbtn').click(function() {
             $('#result').select();
             document.execCommand("copy");
-            $('.alert').show();
+            $('#copytoclip').show();
         });
     });
 </script>
