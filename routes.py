@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, send_file, redirect
 import argparse
 from codimd import Codimd, StatusCodeError
 from converter import Converter
+from requests.exceptions import ConnectionError
 
 app = Flask(__name__)
 
@@ -17,11 +18,15 @@ def home():
         codi.parse_url()
         try:
             data = codi.get_md()
-        except (AttributeError, StatusCodeError) as e:
+        except (AttributeError, StatusCodeError, ConnectionError) as e:
             if isinstance(e, AttributeError):
-                values["error_display"] = "Not a valid CodiMD URL!"
+                values["error_display"] = "Not a valid URL for a CodiMD note!"
             elif isinstance(e, StatusCodeError):
-                values["error_display"] = "Could not reach given CodiMD URL!"
+                values["error_display"] = "Did not find a note with that id on" \
+                " server!"
+            elif isinstance(e, ConnectionError):
+                values["error_display"] = "Could not reach the CodiMD Server!"
+
 
             if "eisvogelTemplate" in request.form:
                 values["eisvogel"] = True
