@@ -37,18 +37,27 @@
                             <input type="text" name="url" class="form-control" placeholder="CodiMD URL"
                                    value="{{ url }}"/>
                         </div>
+
+                        <h2> Templates </h2>
                         <ul class="list-group">
+                            {% for template in templates %}
                             <li class="list-group-item">
-                                Use the Eisvogel latex template
-                                <div class="material-switch float-right">
-                                    {% if eisvogel %}
-                                        <input id="eisvogelTemplate" name="eisvogelTemplate" type="checkbox" checked/>
+                                <div class="custom-control custom-radio">
+                                    {% if template == cur_template  %}
+                                    <input type="radio"
+                                    class="custom-control-input" id="{{ template }}" value="{{ template }}" name="template" checked/>
                                     {% else %}
-                                        <input id="eisvogelTemplate" name="eisvogelTemplate" type="checkbox"/>
+                                    <input type="radio"
+                                    class="custom-control-input" id="{{ template }}" value="{{ template }} "name="template" />
                                     {% endif %}
-                                    <label for="eisvogelTemplate" class="label-default"></label>
+                                    <label class="custom-control-label"
+                                           for="{{ template }}">{{ template }}</label>
                                 </div>
                             </li>
+                            {% endfor %}
+                        </ul>
+                        <h2> Settings </h2>
+                        <ul class="list-group">
                             <li class="list-group-item">
                                 Convert to file
                                 <div class="material-switch float-right">
@@ -92,8 +101,8 @@
 <script src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
 <script>
+    $('#copytoclip').hide();
     $(document).ready(function () {
-        $('#copytoclip').hide();
 
         $('.close').click(function() {
             $('.alert').hide();

@@ -1,3 +1,11 @@
+h2 {
+	padding-top: 0.25em;
+	padding-left: 0.25em;
+
+	font-size: 1.75em;
+}
+
+/* switch design */
 .material-switch > input[type="checkbox"] {
    display: none;   
 }

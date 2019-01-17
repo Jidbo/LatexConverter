@@ -1,59 +1,73 @@
 from flask import Flask, render_template, request, send_file, redirect
 import argparse
 from codimd import Codimd, StatusCodeError
-from converter import Converter
+from converter import Converter, get_available_templates
 from requests.exceptions import ConnectionError
 
 app = Flask(__name__)
+NO_TEMPLATE_NAME = "None"
 
+def parse_error(error):
+    values = {}
+    if isinstance(error, AttributeError):
+        values["error_display"] = "Not a valid URL for a CodiMD note!"
+    elif isinstance(error, StatusCodeError):
+        values["error_display"] = "Did not find a note with that id on" \
+        " the server!"
+    elif isinstance(error, ConnectionError):
+        values["error_display"] = "Could not reach the CodiMD Server!"
+
+
+    if "eisvogelTemplate" in request.form:
+        values["eisvogel"] = True
+    if "convertToFile" in request.form:
+        values["convert_to_file"] = True
+
+    return values
 
 @app.route("/",  methods=["GET", "POST"])
 def home():
+    values = {}
+    # setup templates
+    available_templates = get_available_templates()
+    available_templates.append(NO_TEMPLATE_NAME)
+    values["templates"] = available_templates
+    values["cur_template"] = NO_TEMPLATE_NAME
     if request.method == "POST":
-        values = {}
-        values["url"] = request.form["url"]
         url = request.form["url"]
+        values["url"] = url
+
         # get content from codi md
         codi = Codimd(url)
         codi.parse_url()
         try:
             data = codi.get_md()
         except (AttributeError, StatusCodeError, ConnectionError) as e:
-            if isinstance(e, AttributeError):
-                values["error_display"] = "Not a valid URL for a CodiMD note!"
-            elif isinstance(e, StatusCodeError):
-                values["error_display"] = "Did not find a note with that id on" \
-                " server!"
-            elif isinstance(e, ConnectionError):
-                values["error_display"] = "Could not reach the CodiMD Server!"
-
-
-            if "eisvogelTemplate" in request.form:
-                values["eisvogel"] = True
-            if "convertToFile" in request.form:
-                values["convert_to_file"] = True
+            values = {**values, **parse_error(e)}
             return render_template("index.html", **values)
-
 
         conv = Converter(data, codi.note_id)
 
         # check if template is enabled
-        if "eisvogelTemplate" in request.form:
-            conv.add_template("eisvogel")
-            values["eisvogel"] = True
+        if "template" in request.form:
+            temp_name = request.form["template"].strip()
+
+            if temp_name != NO_TEMPLATE_NAME and temp_name in available_templates:
+                conv.add_template(temp_name)
+                values["cur_template"] = temp_name
 
         # check if convert to file is enabled
         if "convertToFile" in request.form:
             values["convert_to_file"] = True
             conv.convert_to_file("tex")
             values["file_path"] = conv.name
-            return render_template("index.html", **values)
         else:
             values["data"] = conv.convert_to_text()
-            return render_template("index.html", **values)
     else:
         # render default page
-        return render_template("index.html", url="")
+        values["url"] = ""
+
+    return render_template("index.html", **values)
 
 
 @app.route("/download/<id>", methods=["GET"])
