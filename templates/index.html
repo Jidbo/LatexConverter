@@ -56,52 +56,33 @@
                             </li>
                             {% endfor %}
                         </ul>
-                        <h2> Settings </h2>
-                        <ul class="list-group">
-                            <li class="list-group-item">
-                                Convert to file
-                                <div class="material-switch float-right">
-                                    {% if convert_to_file %}
-                                        <input id="saveToFile" name="convertToFile" type="checkbox" checked/>
-                                    {% else %}
-                                        <input id="saveToFile" name="convertToFile" type="checkbox"/>
-                                    {% endif %}
-                                    <label for="saveToFile" class="label-default"></label>
-                                <div>
-                            </li>
-                        </ul>
 
                         <div class="form-group">
                             <input type="submit" class="form-control btn btn-info" value="Submit"/>
                         </div>
                     </form>
                 </div>
-
-                {% if file_path %}
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <a href="download/{{ file_path }}" class="form-control btn
-                                btn-info">Download file</a>
-                        </div>
-                    </div>
-                {% else %}
-                    {% if data %}
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <textarea rows="5" type="text" class="form-control" id="result">{{ data }}</textarea>
-                                <button id="copytoclipbtn" class="form-control btn btn-info">Copy Me</button>
-                            </div>
-                        </div>
-                    {% endif %}
-                {% endif %}
+				{% if data %}
+					<div class="col-md-6">
+						<div class="form-group">
+							<textarea rows="5" type="text" class="form-control" id="result">{{ data }}</textarea>
+							<button id="copytoclipbtn" class="form-control btn btn-info">Copy Me</button>
+							<button id="download" class="form-control btn btn-info">Download file</button>
+						</div>
+					</div>
+				{% endif %}
             </div>
         </div>
     </div>
 </div>
 <script src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/download.min.js') }}"></script>
 <script>
     $('#copytoclip').hide();
+	$('#download').click(function() {
+		download($('#result').innerHtml, "result.tex", "text/plain");
+	});
     $(document).ready(function () {
 
         $('.close').click(function() {

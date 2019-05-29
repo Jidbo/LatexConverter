@@ -1,11 +1,12 @@
-from flask import Flask, render_template, request, send_file, redirect
 import argparse
+from flask import Flask, render_template, request, send_file, make_response
+from requests.exceptions import ConnectionError
 from codimd import Codimd, StatusCodeError
 from converter import Converter, get_available_templates
-from requests.exceptions import ConnectionError
 
 app = Flask(__name__)
 NO_TEMPLATE_NAME = "None"
+
 
 def parse_error(error):
     values = {}
@@ -13,10 +14,9 @@ def parse_error(error):
         values["error_display"] = "Not a valid URL for a CodiMD note!"
     elif isinstance(error, StatusCodeError):
         values["error_display"] = "Did not find a note with that id on" \
-        " the server!"
+            " the server!"
     elif isinstance(error, ConnectionError):
         values["error_display"] = "Could not reach the CodiMD Server!"
-
 
     if "eisvogelTemplate" in request.form:
         values["eisvogel"] = True
@@ -25,7 +25,8 @@ def parse_error(error):
 
     return values
 
-@app.route("/",  methods=["GET", "POST"])
+
+@app.route("/", methods=["GET", "POST"])
 def home():
     values = {}
     # setup templates
@@ -57,12 +58,7 @@ def home():
                 values["cur_template"] = temp_name
 
         # check if convert to file is enabled
-        if "convertToFile" in request.form:
-            values["convert_to_file"] = True
-            conv.convert_to_file("tex")
-            values["file_path"] = conv.name
-        else:
-            values["data"] = conv.convert_to_text()
+        values["data"] = conv.convert_to_text()
     else:
         # render default page
         values["url"] = ""
@@ -70,22 +66,15 @@ def home():
     return render_template("index.html", **values)
 
 
-@app.route("/download/<id>", methods=["GET"])
-def downlaod(id):
-    file_path = f"tmp/{id}.tex"
-    return send_file(file_path, mimetype="text/plain", as_attachment=True,
-                     attachment_filename="result.tex")
-
-
 if __name__ == "__main__":
     # setup argument parser
     parser = argparse.ArgumentParser()
-    parser.add_argument("-d", "--debug", required=False, default=False, action="store_true",
-                        help="Enables the debug mode.")
+    parser.add_argument("-d", "--debug", required=False, default=False,
+                        action="store_true", help="Enables the debug mode.")
     parser.add_argument("--ip", required=False, default="0.0.0.0",
-                        action="store", dest="ip", help="set the ip the flask server binds to")
+                        action="store", dest="ip",
+                        help="set the ip the flask server binds to")
     args = parser.parse_args()
 
     # start flask app
     app.run(debug=args.debug, host=args.ip)
-

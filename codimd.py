@@ -43,10 +43,10 @@ class Codimd:
             except ConnectionError:
                 return "Connection to server failed!"
 
-            if data.status_code is 200:
+            if data.status_code == 200:
                 return data.text
-            else:
-                raise StatusCodeError(200, data.status_code)
+
+            raise StatusCodeError(200, data.status_code)
         else:
             raise AttributeError("No complete url")
 
