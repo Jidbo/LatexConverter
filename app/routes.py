@@ -1,10 +1,9 @@
-import argparse
-from flask import Flask, render_template, request, send_file, make_response
+from flask import render_template, request
 from requests.exceptions import ConnectionError
-from codimd import Codimd, StatusCodeError
-from converter import Converter, get_available_templates
+from app.codimd import Codimd, StatusCodeError
+from app.converter import Converter, get_available_templates
+from . import main
 
-app = Flask(__name__)
 NO_TEMPLATE_NAME = "None"
 
 
@@ -26,7 +25,7 @@ def parse_error(error):
     return values
 
 
-@app.route("/", methods=["GET", "POST"])
+@main.route("/", methods=["GET", "POST"])
 def home():
     values = {}
     # setup templates
@@ -64,17 +63,3 @@ def home():
         values["url"] = ""
 
     return render_template("index.html", **values)
-
-
-if __name__ == "__main__":
-    # setup argument parser
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-d", "--debug", required=False, default=False,
-                        action="store_true", help="Enables the debug mode.")
-    parser.add_argument("--ip", required=False, default="0.0.0.0",
-                        action="store", dest="ip",
-                        help="set the ip the flask server binds to")
-    args = parser.parse_args()
-
-    # start flask app
-    app.run(debug=args.debug, host=args.ip)

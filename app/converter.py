@@ -22,18 +22,21 @@ class Converter:
 
 
     def add_template(self, template):
-        self.arguments.append("--template")
-        templatedir = f"pandoc-templates/{template}.tex"
+        template_folder = get_template_folder()
+        template = os.path.join(template_folder, f"{template}.tex")
         print(f"adding Template {template}")
-        self.arguments.append(templatedir)
+        self.arguments.append("--template")
+        self.arguments.append(template)
 
 
 def get_available_templates():
-    filepath = os.path.realpath(__file__)
-    mainfolder = os.path.dirname(filepath)
-    templatefolder = os.path.join(mainfolder, TEMPLATE_FOLDER)
+    templatefolder = get_template_folder()
     files = os.listdir(templatefolder)
     templates = [tmp[:-4] for tmp in files if tmp.endswith(".tex")]
 
     return templates
 
+def get_template_folder():
+    filepath = os.path.realpath(__file__)
+    mainfolder = os.path.dirname(filepath)
+    return os.path.join(mainfolder, TEMPLATE_FOLDER)

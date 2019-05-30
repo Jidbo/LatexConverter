@@ -137,6 +137,3 @@ pip-selfcheck.json
 # Vim
 *.swp
 
-# tmp files
-tmp/*
-
