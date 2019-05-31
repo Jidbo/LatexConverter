@@ -81,7 +81,7 @@
 <script>
     $('#copytoclip').hide();
 	$('#download').click(function() {
-		download($('#result').innerHtml, "result.tex", "text/plain");
+		download($('#result').val(), "result.tex", "text/plain");
 	});
     $(document).ready(function () {
 
