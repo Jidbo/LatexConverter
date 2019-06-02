@@ -46,7 +46,11 @@ def home():
             values = {**values, **parse_error(e)}
             return render_template("index.html", **values)
 
-        conv = Converter(data, codi.note_id)
+        values["file_type"] = request.form["file_type"]
+        if request.form["file_type"] == "pdf":
+            conv = Converter(data, codi.note_id, to="pdf")
+        else:
+            conv = Converter(data, codi.note_id)
 
         # check if template is enabled
         if "template" in request.form:

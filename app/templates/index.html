@@ -63,6 +63,24 @@
                             {% endfor %}
                         </ul>
 
+                        <h2> File </h2>
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" id="latex" value="latex" name="file_type" checked/>
+                                    <label class="custom-control-label"
+                                           for="latex">Latex</label>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" id="pdf" value="pdf" name="file_type" />
+                                    <label class="custom-control-label"
+                                           for="pdf">PDF</label>
+                                </div>
+                            </li>
+                        </ul>
+
                         <div class="form-group">
                             <input type="submit" class="form-control btn btn-info" value="Submit"/>
                         </div>
@@ -71,8 +89,10 @@
 				{% if data %}
 					<div class="col-md-6">
 						<div class="form-group">
-							<textarea rows="5" type="text" class="form-control" id="result">{{ data }}</textarea>
-							<button id="copytoclipbtn" class="form-control btn btn-info">Copy Me</button>
+							{% if file_type=="latex" %}
+								<textarea rows="5" type="text" class="form-control" id="result">{{ data }}</textarea>
+								<button id="copytoclipbtn" class="form-control btn btn-info">Copy Me</button>
+							{% endif %}
 							<button id="download" class="form-control btn btn-info">Download file</button>
 						</div>
 					</div>
