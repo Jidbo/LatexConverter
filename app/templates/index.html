@@ -78,23 +78,6 @@
 <script src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/download.min.js') }}"></script>
-<script>
-    $('#copytoclip').hide();
-	$('#download').click(function() {
-		download($('#result').val(), "result.tex", "text/plain");
-	});
-    $(document).ready(function () {
-
-        $('.close').click(function() {
-            $('.alert').hide();
-        });
-
-        $('#copytoclipbtn').click(function() {
-            $('#result').select();
-            document.execCommand("copy");
-            $('#copytoclip').show();
-        });
-    });
-</script>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 </html>
