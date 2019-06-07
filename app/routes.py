@@ -6,6 +6,7 @@ from . import main
 from base64 import b64encode
 
 NO_TEMPLATE_NAME = "None"
+FILE_TYPES = ['Latex', 'PDF']
 
 
 def parse_error(error):
@@ -34,6 +35,7 @@ def home():
     available_templates.append(NO_TEMPLATE_NAME)
     values["templates"] = available_templates
     values["cur_template"] = NO_TEMPLATE_NAME
+    values["file_types"] = FILE_TYPES
     if request.method == "POST":
         url = request.form["url"]
         values["url"] = url
@@ -59,7 +61,7 @@ def home():
 
         values["file_type"] = request.form["file_type"]
 
-        if request.form["file_type"] == "pdf":
+        if request.form["file_type"] == "PDF":
             pdf_data = b64encode(conv.convert_to_pdf())
             values["data"] = "data:application/pdf;base64," + pdf_data.decode('utf-8')
         else:
