@@ -1,4 +1,4 @@
-from flask import render_template, request
+from flask import render_template, request, flash
 from requests.exceptions import ConnectionError
 from app.codimd import Codimd, StatusCodeError
 from app.converter import Converter, get_available_templates
@@ -10,16 +10,12 @@ NO_TEMPLATE_NAME = "None"
 
 
 def parse_error(error):
-    values = {}
     if isinstance(error, AttributeError):
-        values["error_display"] = "Not a valid URL for a CodiMD note!"
+        flash("Not a valid URL for a CodiMD note!", 'warning')
     elif isinstance(error, StatusCodeError):
-        values["error_display"] = "Did not find a note with that id on" \
-            " the server!"
+        flash("Did not find a note with that id on the server!", 'warning')
     elif isinstance(error, ConnectionError):
-        values["error_display"] = "Could not reach the CodiMD Server!"
-
-    return values
+        flash("Could not reach the CodiMD Server!", 'warning')
 
 
 @main.route("/", methods=["GET", "POST"])
@@ -27,14 +23,14 @@ def home():
     values = {}
     main_form = form.MainForm(request.form)
     values["form"] = main_form
-    if request.method == "POST":
+    if request.method == "POST" and main_form.validate():
         # get content from codi md
         codi = Codimd(main_form.url.data)
         codi.parse_url()
         try:
             data = codi.get_md()
         except (AttributeError, StatusCodeError, ConnectionError) as e:
-            values = {**values, **parse_error(e)}
+            parse_error(e)
             return render_template("index.html", **values)
 
         conv = Converter(data, codi.note_id)
@@ -50,7 +46,6 @@ def home():
             values["data"] = "data:application/pdf;base64," + pdf_data.decode('utf-8')
         else:
             values["data"] = conv.convert_to_text()
-        print(values["data"])
     else:
         # render default page
         values["url"] = ""
