@@ -1,3 +1,4 @@
+{% import "bootstrap/wtf.html" as wtf %}
 {% extends "bootstrap/base.html" %}
 {% block title %}LatexConverter{% endblock %}
 
@@ -39,62 +40,53 @@
 
                 <div class="col-md-6">
                     <form action="" method="post">
+                        {{ csrf_token }}
                         <div class="form-group">
-                            <input type="text" name="url" class="form-control" placeholder="CodiMD URL"
-                                   value="{{ url }}"/>
+                            {{ form.url }}
                         </div>
 
                         <h2> Templates </h2>
-                        <ul class="list-group">
-                            {% for template in templates %}
+                        	<ul class="list-group">
+                            {% for template in form.template %}
                             <li class="list-group-item">
                                 <div class="custom-control custom-radio">
-                                    {% if template == cur_template  %}
-                                    <input type="radio"
-                                    class="custom-control-input" id="{{ template }}" value="{{ template }}" name="template" checked/>
-                                    {% else %}
-                                    <input type="radio"
-                                    class="custom-control-input" id="{{ template }}" value="{{ template }} "name="template" />
-                                    {% endif %}
+                                    <input type="radio" class="custom-control-input" id="{{ template.id }}"
+                                                                 value="{{ template.object_data }}" name="{{ template.name }}" {% if template.checked %} checked{% endif %}/>
                                     <label class="custom-control-label"
-                                           for="{{ template }}">{{ template }}</label>
+                                           for="{{ template.id }}">{{ template.label.text }}</label>
                                 </div>
                             </li>
                             {% endfor %}
-                        </ul>
+							</ul>
 
                         <h2> File </h2>
-                        <ul class="list-group">
-                            <li class="list-group-item">
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" id="latex" value="latex" name="file_type" checked/>
-                                    <label class="custom-control-label"
-                                           for="latex">Latex</label>
-                                </div>
-                            </li>
-                            <li class="list-group-item">
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" id="pdf" value="pdf" name="file_type" />
-                                    <label class="custom-control-label"
-                                           for="pdf">PDF</label>
-                                </div>
-                            </li>
-                        </ul>
+						<ul class="list-group">
+						{% for filetype in form.file_type %}
+						<li class="list-group-item">
+							<div class="custom-control custom-radio">
+								<input type="radio" class="custom-control-input" id="{{ filetype.id }}"
+															 value="{{ filetype.object_data }}" name="{{ filetype.name }}" {% if filetype.checked %} checked{% endif %}/>
+								<label class="custom-control-label"
+									   for="{{ filetype.id }}">{{ filetype.label.text }}</label>
+							</div>
+						</li>
+						{% endfor %}
+						</ul>
 
                         <div class="form-group">
-                            <input type="submit" class="form-control btn btn-info" value="Submit"/>
+                            {{ form.submit }}
                         </div>
                     </form>
                 </div>
 				{% if data %}
 					<div class="col-md-6">
 						<div class="form-group">
-							{% if file_type=="latex" %}
+							{% if form.file_type.data=="latex" %}
 								<textarea rows="5" type="text" class="form-control" id="result">{{ data }}</textarea>
 								<button id="copytoclipbtn" class="form-control btn btn-info">Copy Me</button>
 							<button id="download" class="form-control btn btn-info">Download file</button>
 							{% endif %}
-                            {% if file_type=="pdf" %}
+                            {% if form.file_type.data=="pdf" %}
                             <button id="download-pdf" data="{{ data }}" class="form-control btn btn-info">Download file</button>
 							{% endif %}
 						</div>

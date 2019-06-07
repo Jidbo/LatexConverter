@@ -4,9 +4,9 @@ from app.codimd import Codimd, StatusCodeError
 from app.converter import Converter, get_available_templates
 from . import main
 from base64 import b64encode
+from . import form
 
 NO_TEMPLATE_NAME = "None"
-FILE_TYPES = ['Latex', 'PDF']
 
 
 def parse_error(error):
@@ -19,29 +19,17 @@ def parse_error(error):
     elif isinstance(error, ConnectionError):
         values["error_display"] = "Could not reach the CodiMD Server!"
 
-    if "eisvogelTemplate" in request.form:
-        values["eisvogel"] = True
-    if "convertToFile" in request.form:
-        values["convert_to_file"] = True
-
     return values
 
 
 @main.route("/", methods=["GET", "POST"])
 def home():
     values = {}
-    # setup templates
-    available_templates = get_available_templates()
-    available_templates.append(NO_TEMPLATE_NAME)
-    values["templates"] = available_templates
-    values["cur_template"] = NO_TEMPLATE_NAME
-    values["file_types"] = FILE_TYPES
+    main_form = form.MainForm(request.form)
+    values["form"] = main_form
     if request.method == "POST":
-        url = request.form["url"]
-        values["url"] = url
-
         # get content from codi md
-        codi = Codimd(url)
+        codi = Codimd(main_form.url.data)
         codi.parse_url()
         try:
             data = codi.get_md()
@@ -52,20 +40,17 @@ def home():
         conv = Converter(data, codi.note_id)
 
         # check if template is enabled
-        if "template" in request.form:
-            temp_name = request.form["template"].strip()
+        temp_name = main_form.template.data
 
-            if temp_name != NO_TEMPLATE_NAME and temp_name in available_templates:
-                conv.add_template(temp_name)
-                values["cur_template"] = temp_name
+        if temp_name != NO_TEMPLATE_NAME and temp_name in get_available_templates():
+            conv.add_template(temp_name)
 
-        values["file_type"] = request.form["file_type"]
-
-        if request.form["file_type"] == "PDF":
+        if main_form.file_type.data == "pdf":
             pdf_data = b64encode(conv.convert_to_pdf())
             values["data"] = "data:application/pdf;base64," + pdf_data.decode('utf-8')
         else:
             values["data"] = conv.convert_to_text()
+        print(values["data"])
     else:
         # render default page
         values["url"] = ""
