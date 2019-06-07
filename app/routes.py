@@ -3,6 +3,7 @@ from requests.exceptions import ConnectionError
 from app.codimd import Codimd, StatusCodeError
 from app.converter import Converter, get_available_templates
 from . import main
+from base64 import b64encode
 
 NO_TEMPLATE_NAME = "None"
 
@@ -46,11 +47,7 @@ def home():
             values = {**values, **parse_error(e)}
             return render_template("index.html", **values)
 
-        values["file_type"] = request.form["file_type"]
-        if request.form["file_type"] == "pdf":
-            conv = Converter(data, codi.note_id, to="pdf")
-        else:
-            conv = Converter(data, codi.note_id)
+        conv = Converter(data, codi.note_id)
 
         # check if template is enabled
         if "template" in request.form:
@@ -60,8 +57,13 @@ def home():
                 conv.add_template(temp_name)
                 values["cur_template"] = temp_name
 
-        # check if convert to file is enabled
-        values["data"] = conv.convert_to_text()
+        values["file_type"] = request.form["file_type"]
+
+        if request.form["file_type"] == "pdf":
+            pdf_data = b64encode(conv.convert_to_pdf())
+            values["data"] = "data:application/pdf;base64," + pdf_data.decode('utf-8')
+        else:
+            values["data"] = conv.convert_to_text()
     else:
         # render default page
         values["url"] = ""

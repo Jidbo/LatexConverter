@@ -92,8 +92,11 @@
 							{% if file_type=="latex" %}
 								<textarea rows="5" type="text" class="form-control" id="result">{{ data }}</textarea>
 								<button id="copytoclipbtn" class="form-control btn btn-info">Copy Me</button>
-							{% endif %}
 							<button id="download" class="form-control btn btn-info">Download file</button>
+							{% endif %}
+                            {% if file_type=="pdf" %}
+                            <button id="download-pdf" data="{{ data }}" class="form-control btn btn-info">Download file</button>
+							{% endif %}
 						</div>
 					</div>
 				{% endif %}
