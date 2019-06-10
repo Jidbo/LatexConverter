@@ -1,7 +1,7 @@
 import './style.css';
-const download = require("downloadjs");
-var bootstrap = require('bootstrap3');
-require('bootstrap3/dist/css/bootstrap.css');
+import 'bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import download from 'downloadjs';
 
 
 $('#copytoclip').hide();
