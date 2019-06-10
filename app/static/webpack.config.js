@@ -39,10 +39,5 @@ module.exports = {
 			$: "jquery",
 			jQuery: "jquery"
 		})
-	],
-	externals: [
-		"fs",
-		"net",
-		"tls"
 	]
 };
