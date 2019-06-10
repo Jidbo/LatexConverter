@@ -2,13 +2,15 @@ LatexConverter
 ===
 A small webapp that converts your CodiMD documents to latexcode using pypandoc.
 
-## Requirments
+## Requirements
 - [pandoc](https://pandoc.org/)
+- [latex](https://www.latex-project.org)
 
 ## Features
 - Directly download tex file
 - Use Pandoc-Templates
-- Edit file on page
+- Edit Tex-File on page
+- Convert generated tex to PDF
 
 ## Templates
 Templates can be stored in the `pandoc-templates` folder and are automatically
@@ -19,7 +21,7 @@ and have the `.tex` extension.
 Default templates:
 - [Eisvogel](https://github.com/Wandmalfarbe/pandoc-latex-template)
 
-## Commandline Arguements
+## Commandline Arguments
 - `-d` `--debug` Enables debug mode for flask server (should be used while 
     developing, since talisman forwards all requests to https)
 - `--ip` set the ip the flask server binds to
@@ -29,4 +31,4 @@ Default templates:
 The docker container uses gunicorn as a WSGI-Server for the project.
 
 Building: `sudo docker build -t latexconverter:latest .`
-Running: `sudo docker run --name latexconv -d -p 5000:5000 latexconverter:latest`
+Running: `sudo docker run --name latexconv -d -e SECRET_KEY="<your-secret-key>" -p 5000:5000 latexconverter:latest`
