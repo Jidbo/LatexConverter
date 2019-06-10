@@ -1,7 +1,17 @@
+import './style.css';
+import 'bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import download from 'downloadjs';
+
+
 $('#copytoclip').hide();
 
 $('#download').click(function() {
 	download($('#result').val(), "result.tex", "text/plain");
+});
+
+$('#download-pdf').click(function() {
+    download($('#download-pdf').attr("data"), "result.pdf", "application/pdf");
 });
 
 $(document).ready(function () {

@@ -1,5 +1,6 @@
 import pypandoc
 import os
+from latex import build_pdf
 
 TEMPLATE_FOLDER = "pandoc-templates/"
 
@@ -10,8 +11,8 @@ class Converter:
         self.to = to
         self.in_format = in_format
         self.name = name
-        self.filename = None
-        self.to_convert = True
+        self.converted = None
+        self.pdf = None
         self.arguments = ["-s"]
 
     def convert_to_text(self):
@@ -20,6 +21,12 @@ class Converter:
                                                extra_args=self.arguments)
         return self.converted
 
+    def convert_to_pdf(self):
+        if self.converted is None:
+            self.convert_to_text()
+
+        self.pdf = bytes(build_pdf(self.converted))
+        return self.pdf
 
     def add_template(self, template):
         template_folder = get_template_folder()

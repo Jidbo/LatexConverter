@@ -1,16 +1,14 @@
+{% import "bootstrap/wtf.html" as wtf %}
 {% extends "bootstrap/base.html" %}
 {% block title %}LatexConverter{% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
-<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
-<script src="{{ url_for('static', filename='js/download.min.js') }}"></script>
-<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+<script src="{{ url_for('static', filename='dist/main.js') }}"></script>
 {% endblock %}
 
 {% block styles %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}"> -->
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='dist/main.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -20,13 +18,39 @@
             <div class="page-header">
                 <h1>Latex-Converter</h1>
             </div>
-            <div class="alert alert-info alert-dismissible fade show"
-            id="copytoclip" role="alert">
-                <strong>Copied text to clipboard!</strong>
-                <button type="button" class="close" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
+			<div class="alert alert-info alert-dismissible fade show"
+			id="copytoclip" role="alert">
+				<strong>Copied to Clipboard!</strong>
+				<button type="button" class="close" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			{% with messages = get_flashed_messages('warning') %}
+			   {% if messages %}
+				  {% for message in messages %}
+						<div class="alert alert-danger alert-dismissible fade show"
+						 role="alert">
+							<strong>{{ message[1] }}</strong>
+							<button type="button" class="close" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+				  {% endfor %}
+			   {% endif %}
+			{% endwith %}
+			{% if form.errors %}
+					{% for field_name, field_errors in form.errors|dictsort if field_errors %}
+						{% for error in field_errors %}
+							<div class="alert alert-danger alert-dismissible fade show"
+							id="copytoclip" role="alert">
+								<strong>{{ form[field_name].label }}: {{ error }}</strong>
+								<button type="button" class="close" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+						{% endfor %}
+					{% endfor %}
+			{% endif %}
             {% if error_display %}
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 <strong>{{ error_display }}</strong>
@@ -39,41 +63,55 @@
 
                 <div class="col-md-6">
                     <form action="" method="post">
+                        {{ form.csrf_token }}
                         <div class="form-group">
-                            <input type="text" name="url" class="form-control" placeholder="CodiMD URL"
-                                   value="{{ url }}"/>
+                            {{ form.url }}
                         </div>
 
                         <h2> Templates </h2>
-                        <ul class="list-group">
-                            {% for template in templates %}
+                        	<ul class="list-group">
+                            {% for template in form.template %}
                             <li class="list-group-item">
                                 <div class="custom-control custom-radio">
-                                    {% if template == cur_template  %}
-                                    <input type="radio"
-                                    class="custom-control-input" id="{{ template }}" value="{{ template }}" name="template" checked/>
-                                    {% else %}
-                                    <input type="radio"
-                                    class="custom-control-input" id="{{ template }}" value="{{ template }} "name="template" />
-                                    {% endif %}
+                                    <input type="radio" class="custom-control-input" id="{{ template.id }}"
+                                                                 value="{{ template.object_data }}" name="{{ template.name }}" {% if template.checked %} checked{% endif %}/>
                                     <label class="custom-control-label"
-                                           for="{{ template }}">{{ template }}</label>
+                                           for="{{ template.id }}">{{ template.label.text }}</label>
                                 </div>
                             </li>
                             {% endfor %}
-                        </ul>
+							</ul>
+
+                        <h2> File </h2>
+						<ul class="list-group">
+						{% for filetype in form.file_type %}
+						<li class="list-group-item">
+							<div class="custom-control custom-radio">
+								<input type="radio" class="custom-control-input" id="{{ filetype.id }}"
+															 value="{{ filetype.object_data }}" name="{{ filetype.name }}" {% if filetype.checked %} checked{% endif %}/>
+								<label class="custom-control-label"
+									   for="{{ filetype.id }}">{{ filetype.label.text }}</label>
+							</div>
+						</li>
+						{% endfor %}
+						</ul>
 
                         <div class="form-group">
-                            <input type="submit" class="form-control btn btn-info" value="Submit"/>
+                            {{ form.submit }}
                         </div>
                     </form>
                 </div>
 				{% if data %}
 					<div class="col-md-6">
 						<div class="form-group">
-							<textarea rows="5" type="text" class="form-control" id="result">{{ data }}</textarea>
-							<button id="copytoclipbtn" class="form-control btn btn-info">Copy Me</button>
+							{% if form.file_type.data=="latex" %}
+								<textarea rows="5" type="text" class="form-control" id="result">{{ data }}</textarea>
+								<button id="copytoclipbtn" class="form-control btn btn-info">Copy Me</button>
 							<button id="download" class="form-control btn btn-info">Download file</button>
+							{% endif %}
+                            {% if form.file_type.data=="pdf" %}
+                            <button id="download-pdf" data="{{ data }}" class="form-control btn btn-info">Download file</button>
+							{% endif %}
 						</div>
 					</div>
 				{% endif %}
