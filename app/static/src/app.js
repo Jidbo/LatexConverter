@@ -1,3 +1,10 @@
+import './style.css';
+var bootstrap = require('bootstrap3');
+require('bootstrap3/dist/css/bootstrap.css');
+// const fs = require('fs');
+const download = require('download');
+
+
 $('#copytoclip').hide();
 
 $('#download').click(function() {
