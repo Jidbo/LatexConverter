@@ -43,7 +43,7 @@ def home():
 
         if main_form.file_type.data == "pdf":
             pdf_data = b64encode(conv.convert_to_pdf())
-            values["data"] = "data:application/pdf;base64," + pdf_data.decode('utf-8')
+            values["data"] = pdf_data.decode('utf-8')
         else:
             values["data"] = conv.convert_to_text()
     else:

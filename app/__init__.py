@@ -21,7 +21,7 @@ def create_app(config_name):
     # setup talisman
     csp = {
         'default-src': '\'self\'',
-        'script-src': '\'self\'',
+        'script-src': ['\'self\'', '\'unsafe-eval\'']
     }
 
     Talisman(app, strict_transport_security_include_subdomains=False,
