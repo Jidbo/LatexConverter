@@ -1,140 +1,104 @@
-{% import "bootstrap/wtf.html" as wtf %}
-{% extends "bootstrap/base.html" %}
-{% block title %}LatexConverter{% endblock %}
-
-{% block scripts %}
-<script src="{{ url_for('static', filename='dist/main.bundle.js') }}"></script>
-{% endblock %}
-
-{% block styles %}
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='dist/main.css') }}">
-{% endblock %}
-
-{% block content %}
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="page-header">
-                <h1>Latex-Converter</h1>
-            </div>
-			<div class="alert alert-info alert-dismissible fade show"
-			id="copytoclip" role="alert">
-				<strong>Copied to Clipboard!</strong>
-				<button type="button" class="close" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			{% with messages = get_flashed_messages('warning') %}
-			   {% if messages %}
-				  {% for message in messages %}
-						<div class="alert alert-danger alert-dismissible fade show"
-						 role="alert">
-							<strong>{{ message[1] }}</strong>
-							<button type="button" class="close" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
-				  {% endfor %}
-			   {% endif %}
-			{% endwith %}
-			{% if form.errors %}
-					{% for field_name, field_errors in form.errors|dictsort if field_errors %}
-						{% for error in field_errors %}
-							<div class="alert alert-danger alert-dismissible fade show"
-							id="copytoclip" role="alert">
-								<strong>{{ form[field_name].label }}: {{ error }}</strong>
-								<button type="button" class="close" aria-label="Close">
-									<span aria-hidden="true">&times;</span>
-								</button>
-							</div>
-						{% endfor %}
-					{% endfor %}
-			{% endif %}
-            {% if error_display %}
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>{{ error_display }}</strong>
-                <button type="button" class="close" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            {% endif %}
-            <div class="row">
-
-                <div class="col-md-6">
-                    <form action="" method="post">
-                        {{ form.csrf_token }}
-                        <div class="form-group">
-                            {{ form.url }}
-                        </div>
-
-                        <h2> Templates </h2>
-                        	<ul class="list-group">
-                            {% for template in form.template %}
-                            <li class="list-group-item">
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" id="{{ template.id }}"
-                                                                 value="{{ template.object_data }}" name="{{ template.name }}" {% if template.checked %} checked{% endif %}/>
-                                    <label class="custom-control-label"
-                                           for="{{ template.id }}">{{ template.label.text }}</label>
-                                </div>
-                            </li>
-                            {% endfor %}
-							</ul>
-
-                        <h2> File </h2>
-						<ul class="list-group">
-						{% for filetype in form.file_type %}
-						<li class="list-group-item">
-							<div class="custom-control custom-radio">
-								<input type="radio" class="custom-control-input" id="{{ filetype.id }}"
-															 value="{{ filetype.object_data }}" name="{{ filetype.name }}" {% if filetype.checked %} checked{% endif %}/>
-								<label class="custom-control-label"
-									   for="{{ filetype.id }}">{{ filetype.label.text }}</label>
-							</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset='utf-8'>
+	<title>LatexConverter</title>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='dist/main.css') }}">
+	<script src="{{ url_for('static', filename='dist/main.bundle.js') }}"></script>
+</head>
+<body class="bg-gray-800">
+	<div class="flex justify-center shadow-lg bg-gray-700 p-2">
+		<h1 class="text-white text-3xl display-block text-center"> LatexConverter </h1>	
+	</div>
+	{% if form.errors %}
+		{% for field_name, field_errors in form.errors|dictsort if field_errors %}
+			{% for error in field_errors %}
+				<div class="alert alert-danger alert-dismissible fade show"
+				id="copytoclip" role="alert">
+					<strong>{{ form[field_name].label }}: {{ error }}</strong>
+					<button type="button" class="close" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+			{% endfor %}
+		{% endfor %}
+	{% endif %}
+	<div class="bg-gray-800 flex flex-row justify-center mx-auto flex-wrap sm:flex-no-wrap w-full xl:w-8/12">
+		<div class="bg-gray-100 p-4 rounded-lg m-2 sm:flex-grow flex-grow-0 min-w-lg shadow-lg">
+			<form action="" method="post" class="flex flex-wrap flex-col">
+				{{ form.csrf_token }}
+				<div class="m-2 p-4 border-solid border-gray-700">
+					<h2 class="text-gray-800 text-2xl">URL</h2>
+					{% if form.url.raw_data %}
+						<input class="border border-gray-500 rounded inline-block min-w-small border-sm" size="25" type="text" name="{{ form.url.name }}" value="{{ form.url.raw_data[0] }}" placeholder="CodiMD URL">
+					{% else %}
+						<input class="border border-gray-500 rounded inline-block min-w-small" type="text" name="{{ form.url.name }}" value="" placeholder="CodiMD URL">
+					{% endif %}
+				</div>
+				<div class="m-2 p-4 border-solid border-gray-700">
+					<h2 class="text-gray-800 text-2xl">Templates</h2>
+					<ul class="text-gray-700">
+					{% for template in form.template %}
+						<li>
+							<label class="container"
+								for="{{ template.id }}">
+							{{ template.label.text }}
+							<input type="radio" id="{{ template.id }}" value="{{ template.object_data }}" 
+								name="{{ template.name }}" {% if template.checked %} checked{% endif %}/>
+							<span class="checkmark"></span>
+							</label>
 						</li>
-						{% endfor %}
-						</ul>
+					{% endfor %}
+				</div>
+				<div class="m-2 p-4 border-solid border-gray-700">
+					<h2 class="text-gray-800 text-2xl">File</h2>
+					<ul class="text-gray-700">
+					{% for template in form.file_type %}
+						<li>
+							<label class="container"
+								for="{{ template.id }}">
+							{{ template.label.text }}
+							<input type="radio" id="{{ template.id }}" value="{{ template.object_data }}" 
+								name="{{ template.name }}" {% if template.checked %} checked{% endif %}/>
+							<span class="checkmark"></span>
+							</label>
+						</li>
+					{% endfor %}
+					</ul>
+				</div>
+				<button type="submit" class="shadow tracking-wider display-block bg-blue-200 m-4 px-3 py-1 rounded">
+					Convert
+				</button>
+			</form>
+		</div>
+		{% if data %}
+		<div class="w-10/12 bg-gray-200 m-2 p-4 sm:flex-grow flex-grow-0 rounded-lg">
+			{% if form.file_type.data=="latex" %}
+			<div class="">
+				<textarea rows="15" class="h-auto bg-gray-100 w-full" type="text" id="result">{{ data }}</textarea>
+			</div>
+			<div class="flex flex-wrap flex-row">
+				<div class="text-center">
+					<button id="copytoclipbtn" class="m-2 shadow tracking-wider display-block bg-blue-200 px-3 py-1
+						rounded">Copy Me</button>
+				</div>
+				<div class="text-center">
+					<button id="download" class="m-2 shadow tracking-wider display-block bg-blue-200 px-3 py-1 rounded">
+						Download File
+					</button>
+			</div>
+			</div>
+			{% endif %}
+			{% if form.file_type.data=="pdf" %}
+			<canvas id="pdf-canvas" data="{{ data }}"></canvas>
+			<ul class="pagination" id="pages">
+			</ul>
+			<span id="page_num"></span>/<span id="page_count"></span>
+			<button id="download-pdf" class="form-control btn btn-info">Download file</button>
+			{% endif %}
+		</div>
+		{% endif %}
+	</div>
+</body>
+</html>
 
-                        <div class="form-group">
-                            {{ form.submit }}
-                        </div>
-                    </form>
-                </div>
-				{% if data %}
-					<div class="col-md-6">
-						<div class="form-group">
-							{% if form.file_type.data=="latex" %}
-								<textarea rows="5" type="text" class="form-control" id="result">{{ data }}</textarea>
-								<button id="copytoclipbtn" class="form-control btn btn-info">Copy Me</button>
-							<button id="download" class="form-control btn btn-info">Download file</button>
-							{% endif %}
-                            {% if form.file_type.data=="pdf" %}
-							<canvas id="pdf-canvas" data="{{ data }}"></canvas>
-							<ul class="pagination">
-								<li class="page-item">
-									<button class="page-link" id="prev" aria-label="Previous">
-										<span aria-hidden="true">&laquo;</span>
-										<span class="sr-only">Previous</span>
-								 	</button>
-								</li>
-								<!-- <li class="page-item"><a class="page-link" href="#">1</a></li> -->
-								<!-- <li class="page-item"><a class="page-link" href="#">2</a></li> -->
-								<!-- <li class="page-item"><a class="page-link" href="#">3</a></li> -->
-								<li class="page-item">
-									<a class="page-link" id="next" aria-label="Next">
-										<span aria-hidden="true">&raquo;</span>
-										<span class="sr-only">Next</span>
-									</a>
-								</li>
-							  </ul>
-							<span id="page_num"></span>/<span id="page_count"></span>
-                            <button id="download-pdf" class="form-control btn btn-info">Download file</button>
-							{% endif %}
-						</div>
-					</div>
-				{% endif %}
-            </div>
-        </div>
-    </div>
-</div>
-{% endblock %}

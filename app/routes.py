@@ -23,7 +23,12 @@ def home():
     values = {}
     main_form = form.MainForm(request.form)
     values["form"] = main_form
-    if request.method == "POST" and main_form.validate():
+    print(dir(main_form.url))
+    print(main_form.url.raw_data)
+    print(main_form.url)
+    # if request.method == "POST" and main_form.validate():
+    if request.method == "POST":
+        print("TEST TEST TEST TEST TEST TEST TEST")
         # get content from codi md
         codi = Codimd(main_form.url.data)
         codi.parse_url()

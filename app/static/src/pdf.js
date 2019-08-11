@@ -1,7 +1,10 @@
 var pdfjsLib = require('pdfjs-dist');
-
 // pdf.js setup
-const pdfData = document.getElementById('pdf-canvas').getAttribute('data');
+const pdf = document.getElementById('pdf-canvas');
+var pdfData = "test";
+if (pdf !== null) {
+	pdfData = pdf.getAttribute('data');
+}
 const pdfRaw = atob(pdfData);
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'static/dist/pdf.worker.bundle.js';
@@ -12,8 +15,11 @@ var pdfDoc = null,
     pageNumPending = null,
     scale = 0.8,
     canvas = document.getElementById('pdf-canvas'),
-    ctx = canvas.getContext('2d');
+	ctx = null;
 
+if (canvas !== null) {
+	ctx = canvas.getContext('2d');
+}
 /**
  * Get page info from document, resize canvas accordingly, and render page.
  * @param num Page number.
@@ -43,7 +49,8 @@ function renderPage(num) {
     });
 
     // Update page counters
-    document.getElementById('page_num').textContent = num;
+	var pageNum = document.getElementById('page_num');
+    pageNum.textContent = num;
 }
 
 
@@ -69,7 +76,11 @@ function onPrevPage() {
     pageNum--;
     queueRenderPage(pageNum);
 }
-document.getElementById('prev').addEventListener('click', onPrevPage);
+const prevButton = document.getElementById('prev');
+if (prevButton !== null) {
+	prevButton.addEventListener('click', onPrevPage);
+}
+
 /**
 * Displays next page.
 */
@@ -80,11 +91,43 @@ function onNextPage() {
     pageNum++;
     queueRenderPage(pageNum);
 }
-document.getElementById('next').addEventListener('click', onNextPage);
+const nextButton = document.getElementById('next');
+if (nextButton !== null) {
+	nextButton.addEventListener('click', onNextPage);
+}
+
+function createButton(name, onclick, attribute) {
+	var listitem = document.createElement('li');
+	listitem.classList.add('page-item');
+	var button = document.createElement('button');
+	if (attribute != null) {
+		button.onclick = function() {onclick(attribute)};
+	} else {
+		button.onclick = onclick;
+	}
+	button.innerHTML = name;
+	button.classList.add('page-link');
+	listitem.appendChild(button);
+	return listitem;
+}
 
 pdfjsLib.getDocument({data: pdfRaw}).promise.then(function(pdfDoc_) {
     pdfDoc = pdfDoc_;
-    document.getElementById('page_count').textContent = pdfDoc.numPages;
+	var page_count = document.getElementById('page_count');
+	if (page_count !== null) {
+		page_count.textContent = pdfDoc.numPages;
+	}
+	var buttons = [];
+	buttons.push(createButton("&laquo;", onPrevPage, null));
+	buttons.push(createButton("&raquo;", onNextPage, null));
+
+	const pagination = document.getElementById('pages');
+	if (pagination != null) {
+		for (var i = 0; i < buttons.length; i++) {
+			pagination.appendChild(buttons[i]);
+		}
+	}
+	
     // Initial/first page rendering
     renderPage(pageNum);
 });

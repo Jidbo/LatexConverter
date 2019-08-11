@@ -18,7 +18,17 @@ module.exports = {
 			test: /\.css$/,
 			use: [
 				{loader: MiniCssExtractPlugin.loader },
-				{loader: 'css-loader' }
+				{loader: 'css-loader' },
+				{
+					loader: 'postcss-loader',
+					options: {
+						indent: 'postcss',
+						plugins: [
+							require('tailwindcss'),
+							require('autoprefixer')
+						]
+					},
+				},
 				]
 			},
 			{
@@ -41,6 +51,6 @@ module.exports = {
 		new webpack.ProvidePlugin({
 			$: "jquery",
 			jQuery: "jquery"
-		})
+		}),
 	]
 };
