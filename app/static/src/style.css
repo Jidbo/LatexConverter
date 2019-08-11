@@ -3,20 +3,14 @@
 @tailwind utilities;
 
  /* Customize the label (the container) */
-.container {
-  display: block;
+.checkmark-container {
   position: relative;
-  padding-left: 25px;
-  margin-bottom: 12px;
   cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
 }
 
 /* Hide the browser's default radio button */
-.container input {
+.hidden-input {
   position: absolute;
   opacity: 0;
   cursor: pointer;
@@ -26,9 +20,6 @@
 
 /* Create a custom radio button */
 .checkmark {
-  position: absolute;
-  top: 0;
-  left: 0;
   height: 18px;
   width: 18px;
   background-color: #ddd;
@@ -36,12 +27,12 @@
 }
 
 /* On mouse-over, add a grey background color */
-.container:hover input ~ .checkmark {
+.checkmark-container:hover > .checkmark {
   background-color: #ccc;
 }
 
 /* When the radio button is checked, add a blue background */
-.container input:checked ~ .checkmark {
+.checkmark-container input:checked ~ .checkmark {
   background-color: #2196F3;
 }
 
@@ -53,16 +44,16 @@
 }
 
 /* Show the indicator (dot/circle) when checked */
-.container input:checked ~ .checkmark:after {
+.hidden-input:checked ~ .checkmark:after {
   display: block;
 }
 
 /* Style the indicator (dot/circle) */
-.container .checkmark:after {
-  top: 6px;
+.checkmark-container .checkmark:after {
+  top: 9px;
   left: 6px;
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background: white;
-} 
+}

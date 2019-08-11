@@ -7,7 +7,7 @@
 </head>
 <body class="bg-gray-800">
 	<div class="flex justify-center shadow-lg bg-gray-700 p-2">
-		<h1 class="text-white text-3xl display-block text-center"> LatexConverter </h1>	
+		<h1 class="text-white text-3xl display-block text-center"> LatexConverter </h1>
 	</div>
 	{% with messages = get_flashed_messages('warning') %}
 		{% if messages %}
@@ -46,7 +46,7 @@
 		<div class="bg-gray-100 p-4 rounded-lg m-2 sm:flex-grow flex-grow-0 min-w-lg shadow-lg">
 			<form action="" method="post" class="flex flex-wrap flex-col">
 				{{ form.csrf_token }}
-				<div class="m-2 p-4 border-solid border-gray-700">
+				<div class="m-2 px-4 border-solid border-gray-700">
 					<h2 class="text-gray-800 text-2xl">URL</h2>
 					{% if form.url.raw_data %}
 						<input class="border border-gray-500 rounded inline-block min-w-small border-sm" size="25" type="text" name="{{ form.url.name }}" value="{{ form.url.raw_data[0] }}" placeholder="CodiMD URL">
@@ -54,34 +54,32 @@
 						<input class="border border-gray-500 rounded inline-block min-w-small" type="text" name="{{ form.url.name }}" value="" placeholder="CodiMD URL">
 					{% endif %}
 				</div>
-				<div class="m-2 p-4 border-solid border-gray-700">
+				<div class="m-2 px-4 border-solid border-gray-700">
 					<h2 class="text-gray-800 text-2xl">Templates</h2>
 					<ul class="text-gray-700">
 					{% for template in form.template %}
-						<li>
-							<label class="container"
-								for="{{ template.id }}">
-							{{ template.label.text }}
-							<input type="radio" id="{{ template.id }}" value="{{ template.object_data }}" 
-								name="{{ template.name }}" {% if template.checked %} checked{% endif %}/>
-							<span class="checkmark"></span>
-							</label>
+						<li class="my-2">
+                            <label class="checkmark-container flex items-center">
+                                <input type="radio" class="hidden-input" id="{{ template.id }}" value="{{ template.object_data }}"
+    								name="{{ template.name }}" {% if template.checked %} checked{% endif %}/>
+                                <span class="checkmark"></span>
+                                <span class="ml-2" >{{ template.label.text }}</span>
+                            </label>
 						</li>
 					{% endfor %}
 				</div>
-				<div class="m-2 p-4 border-solid border-gray-700">
+				<div class="m-2 px-4 border-solid border-gray-700">
 					<h2 class="text-gray-800 text-2xl">File</h2>
 					<ul class="text-gray-700">
 					{% for template in form.file_type %}
-						<li>
-							<label class="container"
-								for="{{ template.id }}">
-							{{ template.label.text }}
-							<input type="radio" id="{{ template.id }}" value="{{ template.object_data }}" 
-								name="{{ template.name }}" {% if template.checked %} checked{% endif %}/>
-							<span class="checkmark"></span>
-							</label>
-						</li>
+                        <li class="my-2">
+                            <label class="checkmark-container flex items-center">
+                                <input type="radio" class="hidden-input" id="{{ template.id }}" value="{{ template.object_data }}"
+                                    name="{{ template.name }}" {% if template.checked %} checked{% endif %}/>
+                                <span class="checkmark"></span>
+                                <span class="ml-2" >{{ template.label.text }}</span>
+                            </label>
+                        </li>
 					{% endfor %}
 					</ul>
 				</div>
@@ -136,4 +134,3 @@
 	<script src="{{ url_for('static', filename='dist/main.bundle.js') }}"></script>
 </body>
 </html>
-
