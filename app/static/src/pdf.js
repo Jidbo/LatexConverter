@@ -5,6 +5,7 @@ var pdfData = "test";
 if (pdf !== null) {
 	pdfData = pdf.getAttribute('data');
 }
+console.log(pdfData);
 const pdfRaw = atob(pdfData);
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'static/dist/pdf.worker.bundle.js';
@@ -26,6 +27,7 @@ if (canvas !== null) {
 */
 function renderPage(num) {
     pageRendering = true;
+    console.log("trying to render page");
     // Using promise to fetch the page
     pdfDoc.getPage(num).then(function(page) {
         var viewport = page.getViewport(scale);
@@ -96,38 +98,12 @@ if (nextButton !== null) {
 	nextButton.addEventListener('click', onNextPage);
 }
 
-function createButton(name, onclick, attribute) {
-	var listitem = document.createElement('li');
-	listitem.classList.add('page-item');
-	var button = document.createElement('button');
-	if (attribute != null) {
-		button.onclick = function() {onclick(attribute)};
-	} else {
-		button.onclick = onclick;
-	}
-	button.innerHTML = name;
-	button.classList.add('page-link');
-	listitem.appendChild(button);
-	return listitem;
-}
-
 pdfjsLib.getDocument({data: pdfRaw}).promise.then(function(pdfDoc_) {
     pdfDoc = pdfDoc_;
 	var page_count = document.getElementById('page_count');
 	if (page_count !== null) {
 		page_count.textContent = pdfDoc.numPages;
 	}
-	var buttons = [];
-	buttons.push(createButton("&laquo;", onPrevPage, null));
-	buttons.push(createButton("&raquo;", onNextPage, null));
-
-	const pagination = document.getElementById('pages');
-	if (pagination != null) {
-		for (var i = 0; i < buttons.length; i++) {
-			pagination.appendChild(buttons[i]);
-		}
-	}
-	
     // Initial/first page rendering
     renderPage(pageNum);
 });

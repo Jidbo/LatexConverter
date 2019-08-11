@@ -3,8 +3,6 @@ import './pdf.js';
 import download from 'downloadjs';
 
 $(document).ready(function() {
-	$('#copytoclip').hide();
-
 	$('.close').click(function() {
 		$(this).parent().hide();
 	});

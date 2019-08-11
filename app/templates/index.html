@@ -4,7 +4,6 @@
 	<meta charset='utf-8'>
 	<title>LatexConverter</title>
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='dist/main.css') }}">
-	<script src="{{ url_for('static', filename='dist/main.bundle.js') }}"></script>
 </head>
 <body class="bg-gray-800">
 	<div class="flex justify-center shadow-lg bg-gray-700 p-2">
@@ -36,7 +35,7 @@
 	    {% endfor %}
     {% endif %}
 
-    <div class="bg-blue-400 px-4 py-4 text-gray-100 text-center"
+    <div class="bg-blue-400 px-4 py-4 text-gray-100 text-center hidden"
     id="copytoclip" role="alert">
         <strong>Copied to clipboard!</strong>
         <button type="button" class="close" aria-label="Close">
@@ -103,22 +102,38 @@
 						rounded">Copy Me</button>
 				</div>
 				<div class="text-center">
-					<button id="download" class="m-2 shadow tracking-wider display-block bg-blue-200 px-3 py-1 rounded">
-						Download File
-					</button>
+				<button id="download" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center">
+					<svg class="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z"/></svg>
+				<span>Download</span>
+				</button>
 			</div>
 			</div>
 			{% endif %}
 			{% if form.file_type.data=="pdf" %}
 			<canvas id="pdf-canvas" data="{{ data }}"></canvas>
-			<ul class="pagination" id="pages">
-			</ul>
-			<span id="page_num"></span>/<span id="page_count"></span>
-			<button id="download-pdf" class="form-control btn btn-info">Download file</button>
+			<div class="inline-flex">
+				<button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l" id="prev" aria-label="Previous">
+					<span aria-hidden="true">&laquo;</span>
+					<span class="sr-only">Previous</span>
+				</button>
+				<div class="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4">
+					<span id="page_num"></span>/<span id="page_count"></span>
+				</div>
+				<button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r" id="next" aria-label="Previous">
+					<span aria-hidden="true">&raquo;</span>
+					<span class="sr-only">Previous</span>
+				</button>
+			</div>
+
+			<button id="download-pdf" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center">
+  				<svg class="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z"/></svg>
+  			<span>Download</span>
+			</button>
 			{% endif %}
 		</div>
 		{% endif %}
 	</div>
+	<script src="{{ url_for('static', filename='dist/main.bundle.js') }}"></script>
 </body>
 </html>
 
