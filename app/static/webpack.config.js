@@ -9,36 +9,30 @@ module.exports = {
 	},
 	output: {
 		filename: '[name].bundle.js',
-		path: path.resolve(__dirname, 'dist'),
-		publicPath: "./dist"
+		path: path.resolve(__dirname, './dist'),
+		publicPath: "./dist/"
 	},
 	module: {
 		rules: [
-			{
-			test: /\.css$/,
-			use: [
-				{loader: MiniCssExtractPlugin.loader },
-				{loader: 'css-loader' },
-				{
-					loader: 'postcss-loader',
-					options: {
-						indent: 'postcss',
-						plugins: [
-							require('tailwindcss'),
-							require('autoprefixer')
-						]
-					},
-				},
-				]
-			},
-			{
-			  test: /\.(ttf|eot|svg|png|jpg|gif|ico)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-			  loader: 'file-loader'
-			},
-			{
-				test: /\.(woff|woff2|eot|ttf|otf)$/,
+      {
+				test: /\.css$/,
 				use: [
-					'file-loader'
+          {
+						loader: MiniCssExtractPlugin.loader
+					},
+					{
+						loader: 'css-loader'
+					},
+					{
+						loader: 'postcss-loader',
+						options: {
+							indent: 'postcss',
+							plugins: [
+								require('tailwindcss'),
+								require('autoprefixer')
+							]
+						},
+					},
 				]
 			}
 		]
