@@ -13,8 +13,7 @@
 	{% with messages = get_flashed_messages('warning') %}
 		{% if messages %}
 			{% for message in messages %}
-				<div class="bg-red-400 px-4 py-4 text-gray-100 text-center"
-					role="alert">
+				<div class="bg-red-600 px-4 py-4 text-gray-100 text-center">
 					<strong>{{ message[1] }}</strong>
 					<button type="button" class="close" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
@@ -27,8 +26,7 @@
 	{% if form.errors %}
 		{% for field_name, field_errors in form.errors|dictsort if field_errors %}
 			{% for error in field_errors %}
-                <div class="bg-red-400 px-4 py-4 text-gray-100 text-center"
-                id="copytoclip" role="alert">
+                <div class="bg-red-600 px-4 py-4 text-gray-100 text-center">
                     <strong>{{ form[field_name].label }}: {{ error }}</strong>
                     <button type="button" class="close" aria-label="Close">
                         <span aria-hidden="true" class="text-lg">&times;</span>
