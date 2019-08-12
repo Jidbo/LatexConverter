@@ -7,11 +7,7 @@
                 {{ form.csrf_token }}
                 <div class="m-2 border-solid border-gray-700">
                     <h2 class="text-gray-800 text-2xl">URL</h2>
-                    {% if form.url.raw_data %}
                         <input class="bg-white focus:outline-none border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal" type="text" name="{{ form.url.name }}" value="{{ form.url.raw_data[0] }}" placeholder="CodiMD URL">
-                    {% else %}
-                        <input class="bg-white focus:outline-none border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal" type="text" name="{{ form.url.name }}" value="" placeholder="CodiMD URL">
-                    {% endif %}
                 </div>
                 <div class="m-2 border-solid border-gray-700">
                     <h2 class="text-gray-800 text-2xl">Templates</h2>
@@ -46,6 +42,43 @@
                     Convert
                 </button>
             </form>
+        </div>
+        <div class="w-10/12 bg-gray-200 m-2 p-4 sm:flex-grow flex-grow-0 rounded-lg">
+            {% if form.file_type.data=="latex" %}
+                <div class="">
+                    <textarea rows="15" class="h-auto bg-gray-100 w-full" type="text" id="result">{{ data }}</textarea>
+                </div>
+                <div class="flex flex-wrap flex-row items-center">
+                    <button id="copytoclipbtn" class="m-2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">Copy Me</button>
+                    <button id="download" class="m-2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center">
+                        <svg class="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z"/></svg>
+                    <span>Download</span>
+                    </button>
+                </div>
+            {% endif %}
+            {% if form.file_type.data=="pdf" %}
+                <canvas id="pdf-canvas" data="{{ data }}"></canvas>
+                <div class="flex flex-wrap flex-row items-center m-2">
+                    <div class="inline-flex">
+                        <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l" id="prev" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span class="sr-only">Previous</span>
+                        </button>
+                        <div class="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4">
+                            <span id="page_num">-</span>/<span id="page_count">-</span>
+                        </div>
+                        <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r" id="next" aria-label="Previous">
+                            <span aria-hidden="true">&raquo;</span>
+                            <span class="sr-only">Previous</span>
+                        </button>
+                    </div>
+
+                    <button id="download-pdf" class="ml-2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center">
+                        <svg class="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z"/></svg>
+                        <span>Download</span>
+                    </button>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>

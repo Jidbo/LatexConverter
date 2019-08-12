@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset='utf-8'>
+	<title>LatexConverter</title>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='dist/main.css') }}">
+</head>
+<body class="min-h-screen w-full flex flex-col bg-gray-800">
+	<div class="flex justify-center shadow-lg bg-gray-700 p-2">
+		<h1 class="text-white text-3xl display-block text-center"> LatexConverter </h1>
+	</div>
+	{% with messages = get_flashed_messages('warning') %}
+		{% if messages %}
+			{% for message in messages %}
+				<div class="bg-red-600 px-4 py-4 text-gray-100 text-center">
+					<strong>{{ message[1] }}</strong>
+					<button type="button" class="close" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+			{% endfor %}
+		{% endif %}
+	{% endwith %}
+
+	{% if form.errors %}
+		{% for field_name, field_errors in form.errors|dictsort if field_errors %}
+			{% for error in field_errors %}
+                <div class="bg-red-600 px-4 py-4 text-gray-100 text-center">
+                    <strong>{{ form[field_name].label }}: {{ error }}</strong>
+                    <button type="button" class="close" aria-label="Close">
+                        <span aria-hidden="true" class="text-lg">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+	    {% endfor %}
+    {% endif %}
+
+    <div class="bg-blue-400 px-4 py-4 text-gray-100 text-center hidden"
+    id="copytoclip" role="alert">
+        <strong>Copied to clipboard!</strong>
+        <button type="button" class="close" aria-label="Close">
+            <span aria-hidden="true" class="text-lg">&times;</span>
+        </button>
+    </div>
+    {% block content %}
+    {% endblock %}
+	<script src="{{ url_for('static', filename='dist/main.bundle.js') }}"></script>
+</body>
+</html>
