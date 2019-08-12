@@ -18,12 +18,23 @@ def parse_error(error):
         flash("Could not reach the CodiMD Server!", 'warning')
 
 
-@main.route("/", methods=["GET", "POST"])
+@main.route("/", methods=["GET"])
 def home():
     values = {}
     main_form = form.MainForm(request.form)
     values["form"] = main_form
-    if request.method == "POST" and main_form.validate():
+    values["url"] = ""
+
+    return render_template("index.html", **values)
+
+
+@main.route("/converted", methods=["POST"])
+def converted():
+    values = {}
+    main_form = form.MainForm(request.form)
+    values["form"] = main_form
+
+    if main_form.validate():
         # get content from codi md
         codi = Codimd(main_form.url.data)
         codi.parse_url()
@@ -42,12 +53,16 @@ def home():
             conv.add_template(temp_name)
 
         if main_form.file_type.data == "pdf":
-            pdf_data = b64encode(conv.convert_to_pdf())
-            values["data"] = "data:application/pdf;base64," + pdf_data.decode('utf-8')
+            pdf_raw = conv.convert_to_pdf()
+            if not pdf_raw:
+                flash('Could not convert to PDF')
+                return render_template("index.html", **values)
+
+            pdf_data = b64encode(pdf_raw)
+            values["data"] = pdf_data.decode('utf-8')
         else:
             values["data"] = conv.convert_to_text()
-    else:
-        # render default page
-        values["url"] = ""
+
+        return render_template("converted.html", **values)
 
     return render_template("index.html", **values)

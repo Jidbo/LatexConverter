@@ -1,0 +1,28 @@
+{
+  "private": true,
+  "scripts": {
+    "dev": "npm run development",
+    "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --mode=development --devtool inline-cheap-module-source-map",
+    "watch": "npm run development -- --watch",
+    "watch-poll": "npm run watch -- --watch-poll",
+    "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --mode=development --inline --hot --devtool inline-cheap-module-source-map",
+    "prod": "npm run production",
+    "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --mode=production --devtool source-map"
+  },
+  "devDependencies": {
+    "autoprefixer": "^9.6.1",
+    "cross-env": "^5.1",
+    "css-loader": "^2.1.1",
+    "mini-css-extract-plugin": "^0.7.0",
+    "postcss-loader": "^3.0.0",
+    "style-loader": "^0.23.1",
+    "webpack": "^4.39.1",
+    "webpack-cli": "^3.3.6"
+  },
+  "dependencies": {
+    "downloadjs": "^1.4.7",
+    "jquery": "^3.4.1",
+    "pdfjs-dist": "^2.1.266",
+    "tailwindcss": "^1.1.1"
+  }
+}

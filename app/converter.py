@@ -1,6 +1,7 @@
 import pypandoc
 import os
 from latex import build_pdf
+from latex import LatexBuildError
 
 TEMPLATE_FOLDER = "pandoc-templates/"
 
@@ -24,8 +25,22 @@ class Converter:
     def convert_to_pdf(self):
         if self.converted is None:
             self.convert_to_text()
+        self.pdf = None
+        generated = False
 
-        self.pdf = bytes(build_pdf(self.converted))
+        try:
+            self.pdf = bytes(build_pdf(self.converted, builder='latexmk'))
+            generated = True
+        except LatexBuildError:
+            print('latexmk failed to build. Falling back to xelatex...')
+
+        if not generated:
+            try:
+                self.pdf = bytes(build_pdf(self.converted, builder='xelatexmk'))
+                generated = True
+            except LatexBuildError:
+                print('xelatex failed to build. Aborting...')
+
         return self.pdf
 
     def add_template(self, template):
