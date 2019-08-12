@@ -1,4 +1,9 @@
 {% extends "default.html" %}
+
+{% block messages %}
+{{ super() }}
+{% endblock %}
+
 {% block content %}
 <div class="flex flex-col flex-grow w-full items-center justify-center">
     <div class="bg-gray-800 flex flex-row justify-center mx-auto flex-wrap sm:flex-no-wrap w-full xl:w-8/12">

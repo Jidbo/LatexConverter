@@ -1,4 +1,14 @@
 {% extends "default.html" %}
+{% block messages %}
+{{ super() }}
+<div class="bg-blue-400 px-4 py-4 text-gray-100 text-center hidden"
+id="copytoclip" role="alert">
+    <strong>Copied to clipboard!</strong>
+    <button type="button" class="close" aria-label="Close">
+        <span aria-hidden="true" class="text-lg">&times;</span>
+    </button>
+</div>
+{% endblock %}
 {% block content %}
 <div class="flex flex-col flex-grow w-full items-center justify-center">
     <div class="bg-gray-800 flex flex-row justify-center mx-auto flex-wrap sm:flex-no-wrap w-full xl:w-8/12">

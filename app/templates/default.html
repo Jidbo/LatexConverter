@@ -18,6 +18,8 @@
 	<div class="flex justify-center shadow-lg bg-gray-700 p-2">
 		<h1 class="text-white text-3xl display-block text-center"> LatexConverter </h1>
 	</div>
+
+    {% block messages %}
 	{% with messages = get_flashed_messages('warning') %}
 		{% if messages %}
 			{% for message in messages %}
@@ -43,14 +45,7 @@
             {% endfor %}
 	    {% endfor %}
     {% endif %}
-
-    <div class="bg-blue-400 px-4 py-4 text-gray-100 text-center hidden"
-    id="copytoclip" role="alert">
-        <strong>Copied to clipboard!</strong>
-        <button type="button" class="close" aria-label="Close">
-            <span aria-hidden="true" class="text-lg">&times;</span>
-        </button>
-    </div>
+    {% endblock %}
     {% block content %}
     {% endblock %}
 	<script src="{{ url_for('static', filename='dist/main.bundle.js') }}"></script>
