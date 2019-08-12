@@ -53,7 +53,12 @@ def converted():
             conv.add_template(temp_name)
 
         if main_form.file_type.data == "pdf":
-            pdf_data = b64encode(conv.convert_to_pdf())
+            pdf_raw = conv.convert_to_pdf()
+            if not pdf_raw:
+                flash('Could not convert to PDF')
+                return render_template("index.html", **values)
+
+            pdf_data = b64encode(pdf_raw)
             values["data"] = pdf_data.decode('utf-8')
         else:
             values["data"] = conv.convert_to_text()
