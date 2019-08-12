@@ -2,7 +2,7 @@ FROM python:3.7-stretch
 
 ENV FLASK_APP flasky.py
 
-RUN apt-get update && apt-get install -y pandoc
+RUN apt-get update && apt-get install -y pandoc texlive-full
 RUN useradd -ms /bin/bash flasky
 RUN adduser flasky sudo
 
